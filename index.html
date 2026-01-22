@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description"
+        content="Find the optimal time to leave for your commute using real-time traffic predictions">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Commute Optimizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="app">
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="screen">
+            <div class="setup-container">
+                <div class="logo-section">
+                    <div class="logo-icon">🚗</div>
+                    <h1>Commute Optimizer</h1>
+                    <p class="tagline">Find your perfect departure time</p>
+                </div>
+
+                <form id="setup-form" class="setup-form">
+                    <div class="form-section">
+                        <h2>API Configuration</h2>
+                        <div class="input-group">
+                            <label for="api-key">Google API Key</label>
+                            <input type="password" id="api-key" placeholder="Enter your API key" required>
+                            <span class="input-hint">Requires Directions API enabled</span>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>Your Locations</h2>
+                        <div class="input-group">
+                            <label for="home-address">Home Address</label>
+                            <input type="text" id="home-address" placeholder="123 Main St, City, State" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="work-address">Work Address</label>
+                            <input type="text" id="work-address" placeholder="456 Office Blvd, City, State" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Get Started</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="main-screen" class="screen hidden">
+            <!-- Header -->
+            <header class="header">
+                <h1>Commute Optimizer</h1>
+                <button id="settings-btn" class="icon-btn" aria-label="Settings">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
+                </button>
+            </header>
+
+            <!-- Day Picker -->
+            <div class="day-picker-container">
+                <div id="day-picker" class="day-picker"></div>
+            </div>
+
+            <!-- Commute Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-direction="morning">
+                    <span class="tab-icon">🌅</span>
+                    Morning
+                </button>
+                <button class="tab" data-direction="evening">
+                    <span class="tab-icon">🌆</span>
+                    Evening
+                </button>
+            </div>
+
+            <!-- Results Area -->
+            <main class="results-area">
+                <!-- Recommendation Card -->
+                <div id="recommendation-card" class="recommendation-card">
+                    <div class="recommendation-content">
+                        <div class="recommendation-label">Best Time to Leave</div>
+                        <div id="best-time" class="best-time">--:--</div>
+                        <div id="travel-info" class="travel-info">
+                            <span id="duration">-- min</span>
+                            <span class="divider">•</span>
+                            <span id="savings" class="savings">Save -- min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="chart-section">
+                    <h2>Travel Time by Departure</h2>
+                    <div id="chart-container" class="chart-container">
+                        <div class="chart-placeholder">
+                            <p>Select a day and tap "Analyze" to see travel times</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analyze Button -->
+                <button id="analyze-btn" class="btn-primary analyze-btn">
+                    <span class="btn-text">Analyze Commute</span>
+                    <span class="btn-loader hidden">
+                        <span class="spinner"></span>
+                        Analyzing...
+                    </span>
+                </button>
+
+                <!-- Route Info -->
+                <div id="route-info" class="route-info">
+                    <div class="route-point">
+                        <span class="route-icon home">🏠</span>
+                        <span id="home-display" class="route-label">Home</span>
+                    </div>
+                    <div class="route-arrow">→</div>
+                    <div class="route-point">
+                        <span class="route-icon work">🏢</span>
+                        <span id="work-display" class="route-label">Work</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button id="close-settings" class="icon-btn" aria-label="Close">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <form id="settings-form" class="settings-form">
+                    <div class="input-group">
+                        <label for="settings-api-key">Google API Key</label>
+                        <input type="password" id="settings-api-key" placeholder="Enter your API key">
+                    </div>
+                    <div class="input-group">
+                        <label for="settings-home">Home Address</label>
+                        <input type="text" id="settings-home" placeholder="Home address">
+                    </div>
+                    <div class="input-group">
+                        <label for="settings-work">Work Address</label>
+                        <input type="text" id="settings-work" placeholder="Work address">
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Morning Commute</h3>
+                        <div class="time-range">
+                            <div class="input-group">
+                                <label for="morning-start">Start Time</label>
+                                <input type="time" id="morning-start" value="06:00">
+                            </div>
+                            <div class="input-group">
+                                <label for="morning-end">End Time</label>
+                                <input type="time" id="morning-end" value="10:00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Evening Commute</h3>
+                        <div class="time-range">
+                            <div class="input-group">
+                                <label for="evening-start">Start Time</label>
+                                <input type="time" id="evening-start" value="16:00">
+                            </div>
+                            <div class="input-group">
+                                <label for="evening-end">End Time</label>
+                                <input type="time" id="evening-end" value="20:00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Traffic Estimate</h3>
+                        <div class="input-group">
+                            <label for="traffic-model">Prediction Model</label>
+                            <select id="traffic-model" class="select-input">
+                                <option value="compare_all" selected>Compare All (Stacked)</option>
+                                <option value="optimistic">Optimistic (Best Case)</option>
+                                <option value="best_guess">Average (Best Guess)</option>
+                                <option value="pessimistic">Pessimistic (Worst Case)</option>
+                            </select>
+                            <span class="input-hint">Compare All shows optimistic, average, and pessimistic
+                                together</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button type="submit" class="btn-primary">Save Settings</button>
+                        <button type="button" id="clear-data-btn" class="btn-danger">Clear All Data</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

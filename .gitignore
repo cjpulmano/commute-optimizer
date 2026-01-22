@@ -1,0 +1,21 @@
+# Environment variables (contains API keys)
+.env
+.env.local
+.env*.local
+
+# Vercel
+.vercel
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Node (if you add dependencies later)
+node_modules/
