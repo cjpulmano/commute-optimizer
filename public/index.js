@@ -36,7 +36,7 @@ const state = {
     selectedDirection: 'morning',
     isAnalyzing: false,
     analysisResults: null,
-    trafficModel: 'compare_all',
+    trafficModel: 'pessimistic',
     timeSettings: {
         morningStart: CONFIG.DEFAULTS.MORNING_START,
         morningEnd: CONFIG.DEFAULTS.MORNING_END,
