@@ -110,7 +110,7 @@ function init() {
 function loadSettings() {
     state.homeAddress = localStorage.getItem(CONFIG.STORAGE_KEYS.HOME_ADDRESS) || '';
     state.workAddress = localStorage.getItem(CONFIG.STORAGE_KEYS.WORK_ADDRESS) || '';
-    state.trafficModel = localStorage.getItem(CONFIG.STORAGE_KEYS.TRAFFIC_MODEL) || 'compare_all';
+    state.trafficModel = localStorage.getItem(CONFIG.STORAGE_KEYS.TRAFFIC_MODEL) || 'pessimistic';
     state.timeSettings.morningStart = localStorage.getItem(CONFIG.STORAGE_KEYS.MORNING_START) || CONFIG.DEFAULTS.MORNING_START;
     state.timeSettings.morningEnd = localStorage.getItem(CONFIG.STORAGE_KEYS.MORNING_END) || CONFIG.DEFAULTS.MORNING_END;
     state.timeSettings.eveningStart = localStorage.getItem(CONFIG.STORAGE_KEYS.EVENING_START) || CONFIG.DEFAULTS.EVENING_START;
